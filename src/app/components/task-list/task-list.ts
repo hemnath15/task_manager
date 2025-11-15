@@ -9,6 +9,7 @@ import type { ColDef } from 'ag-grid-community';
 import { isPlatformBrowser } from '@angular/common';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
+import { Observable } from 'rxjs';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
@@ -21,53 +22,27 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 })
 export class TaskListComponent {
   showGrid = false;
-
   private platformId = inject(PLATFORM_ID);
-  tasks:Task[]=[]
-  colDefs: ColDef[] = [
-    {
-      headerName: 'Done',
-      field: 'completed',
-      cellRenderer: (params: any) => {
-        return `<input type="checkbox" ${params.value ? 'checked' : ''} />`;
-      },
-      cellRendererParams: {
-        clicked: (id: string) => this.handleToggle(id),
-      },
-    },
+  tasks$!: Observable<Task[]>;
+colDefs: ColDef[] = [
+    { headerName: 'Done', field: 'completed', cellRenderer: (params:any) => `<input type="checkbox" ${params.value ? 'checked' : ''}/>`, },
     { headerName: 'Title', field: 'title', flex: 1 },
-    {
-      headerName: 'Actions',
-      cellRenderer: (params: any) => {
-        return `
-          <button class="edit-btn">Edit</button>
-          <button class="delete-btn">Delete</button>
-        `;
-      },
-    },
+     { headerName: 'Priority', field: 'priority', flex: 1 },
+     { headerName: 'Created On', field: 'createdOn', valueFormatter: params => params.value ? new Date(params.value).toLocaleDateString() : '' },
+    { headerName: 'Date Limit to Finish', field: 'dueDate', valueFormatter: params => params.value ? new Date(params.value).toLocaleDateString() : '' },
+    { headerName: 'Actions', cellRenderer: () => `<button class="delete-btn">Delete</button>` }
   ];
-  constructor(public taskStore: TaskStore) {
 
-  }
+  constructor(private taskStore: TaskStore) {}
+
   ngOnInit() {
-    this.showGrid = isPlatformBrowser(this.platformId);
-    this.getTasks();
+  if (isPlatformBrowser(this.platformId)) {
+    this.tasks$ = this.taskStore.getTasks();
+    this.showGrid = true;
+  }
   }
 
-  getTasks() {
-    this.tasks = this.taskStore.loadFromStorage();
-    return this.tasks;
-  }
-
-  handleToggle(id: string) {
-    this.taskStore.toggleTask(id);
-  }
-
-  handleDelete(id: string) {
+  deleteTask(id: string) {
     this.taskStore.deleteTask(id);
-  }
-
-  handleEdit(task: any) {
-    this.taskStore.editTask(task);
   }
 }

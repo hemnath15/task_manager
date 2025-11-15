@@ -1,13 +1,15 @@
 export type Priority = 'low' | 'medium' | 'high';
 
 export interface Task {
-  id: string;
-  title: string;
+  id?: string;
+  title?: string;
   description?: string;
-  priority: string;
+  priority: Priority;
   completed: boolean;
-  updatedAt?: string; // ISO
-  notes?:string;
-  due?:string;
-  tags?:string
+  createdOn: Date;
+  updatedOn?: Date;
+  dueDate?: Date;
+  assignedTo?: string;
+  tags?: string[];
 }
+

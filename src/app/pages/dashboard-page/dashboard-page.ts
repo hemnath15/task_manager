@@ -7,6 +7,7 @@ import { TaskFormComponent } from '../../components/task-form/task-form';
  imports: [TaskListComponent],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
+  standalone:true
 })
 export class DashboardPage {
 

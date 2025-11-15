@@ -1,17 +1,13 @@
+<form (submit)="onSubmit($event)">
+  <input type="text" placeholder="Task title" [(ngModel)]="newTask" name="title" required />
+  
+  <select [(ngModel)]="priority" name="priority">
+    <option value="low">Low</option>
+    <option value="medium">Medium</option>
+    <option value="high">High</option>
+  </select>
 
-   <form (submit)="onSubmit($event)" class="form">
-      <input 
-        [(ngModel)]="title" 
-        name="title"
-        placeholder="Add task..."
-        required
-      />
+  <input type="date" [(ngModel)]="dueDate" name="dueDate" />
 
-      <select [(ngModel)]="priority" name="priority">
-        <option value="low">Low</option>
-        <option value="medium" selected>Medium</option>
-        <option value="high">High</option>
-      </select>
-
-      <button type="submit">Add</button>
-    </form>
+  <button type="submit">Add Task</button>
+</form>
